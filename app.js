@@ -3,6 +3,8 @@ const app = express()
 const port = 3000
 const exphbs = require('express-handlebars')
 const mongoose = require ('mongoose')
+const Todo = require ('./models/todo')
+
 
 mongoose.connect('mongodb://localhost/todo-list', { useNewUrlParser: true, useUnifiedTopology: true })
 
@@ -18,7 +20,10 @@ app.engine('hbs', exphbs({defaultLayout:'main' , extname:'.hbs'}))
 app.set ('view engine', 'hbs')
 
 app.get ('/', (req,res) => {
-  res.render (`index`)
+  Todo.find ()
+      .lean ()
+      .then (todos => {res.render ('index', {todos:todos})})
+      .catch (error => console.error(error))
 })
 
 
