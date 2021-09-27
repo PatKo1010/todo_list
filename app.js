@@ -25,6 +25,7 @@ app.use (bodyParser.urlencoded({extended: true}))
 app.get ('/', (req,res) => {
   Todo.find ()
       .lean ()
+      .sort ({_id: 'asc'})
       .then (todos => {res.render ('index', {todos:todos})})
       .catch (error => console.error(error))
 })
@@ -73,12 +74,8 @@ app.post ('/todos/:id/delete', (req,res) => {
   const id = req.params.id 
   const name = req.body.name
   return Todo.findById (id)
-    .then(todo => {
-      todo.remove()
-    })
-    .then (
-      res.redirect ('/')
-    )
+    .then(todo => { todo.remove()})
+    .then (() => {res.redirect ('/')})
     .catch (error => console.log (error))
 })
 
